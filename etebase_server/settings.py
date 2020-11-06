@@ -168,6 +168,20 @@ if any(os.path.isfile(x) for x in config_locations):
     if "database-options" in config:
         DATABASES["default"]["OPTIONS"] = config["database-options"]
 
+    if "ldap" in config:
+        ldap = config["ldap"]
+        LDAP_SERVER = ldap.get("server", "")
+        LDAP_SEARCH_BASE = ldap.get("search_base", "")
+        LDAP_FILTER = ldap.get("filter", "")
+        LDAP_BIND_DN = ldap.get("bind_dn", "")
+        LDAP_BIND_PW = ldap.get("bind_pw", "")
+        LDAP_BIND_PW_FILE = ldap.get("bind_pw_file", "")
+        LDAP_CACHE_TTL = ldap.get("cache_ttl", "")
+
+        # Configure EteBase to use LDAP
+        ETEBASE_CREATE_USER_FUNC = "myauth.ldap.create_user"
+        ETEBASE_API_PERMISSIONS_READ = ["myauth.ldap.is_user_in_ldap"]
+
 ETEBASE_CREATE_USER_FUNC = "etebase_server.django.utils.create_user_blocked"
 
 # Efficient file streaming (for large files)
